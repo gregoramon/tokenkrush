@@ -8,9 +8,39 @@ Spelled with a K because I'm Austrian and we like our Ks.
 
 Vercel's [*"AGENTS.md outperforms Skills in our agent evals"*](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) (Jan 27, 2026) showed that a compressed AGENTS.md (pipe-delimited, telegraphic prose, 40 KB → 8 KB) outperformed more sophisticated skill-retrieval systems — 100% pass rate vs 79%. The insight: agents parse dense markdown fine. Token budget spent on padding is wasted.
 
-If you want the full argument for **fighting context bloat** in agent instruction files, read the post. tokenkrush encodes that post's conclusions as a reusable skill. Typical result: **40–60% token reduction, zero directive loss.**
+If you want the full argument for **fighting context bloat** in agent instruction files, read the post. tokenkrush encodes that post's conclusions as a reusable skill.
 
-See [`examples/before-after-claude-md.md`](examples/before-after-claude-md.md) for a real 45% reduction on a global CLAUDE.md with all four Karpathy principles preserved verbatim.
+### Measured token savings
+
+Tested on a real 187-line global CLAUDE.md (8784 chars) compressed into the current tokenkrush v1 style, with token counts measured via each provider's live API:
+
+| Model                          | v0 verbose | v1 tokenkrush  | Δ tokens |
+|--------------------------------|-----------:|---------------:|---------:|
+| anthropic/claude-sonnet-4.6    |      2563  |      **1560**  | **−39.1%** |
+| anthropic/claude-opus-4.7      |      3459  |      **2108**  | **−39.1%** |
+| openai/gpt-5.4                 |      2250  |      **1367**  | **−39.2%** |
+| google/gemini-3-flash-preview  |      2381  |      **1471**  | **−38.2%** |
+
+**~39% token reduction, consistent across every tested tokenizer**, with zero directive loss. The four Karpathy principles, all `ALWAYS` / `NEVER` emphasis, all model IDs, and all code blocks were preserved byte-for-byte.
+
+### Why not go more aggressive?
+
+While we took inspiration from the Vercel blog's ultra-dense format (single-line blobs, dash-joined words, curly-brace hierarchies), our own benchmarks against current 2026 tokenizers didn't support pushing that far. A Vercel-style "v2" compression of the same file actually **lost tokens vs. v1** on every model tested:
+
+| Model                          | v1 tokenkrush | v2 Vercel-aggressive |
+|--------------------------------|--------------:|---------------------:|
+| anthropic/claude-sonnet-4.6    |    −39.1%     |  −27.5%  (11.6 pp worse)  |
+| anthropic/claude-opus-4.7      |    −39.1%     |  −28.7%  (10.4 pp worse)  |
+| openai/gpt-5.4                 |    −39.2%     |  −30.4%  ( 8.8 pp worse)  |
+| google/gemini-3-flash-preview  |    −38.2%     |  −23.7%  (14.5 pp worse)  |
+
+**Why:** dash-joining shatters common-word tokens (e.g., `"Bun workspaces"` is 2 tokens; `"Bun-workspaces"` can be 3-4). Curly-brace hierarchies introduce unfamiliar structural tokens. The v2 version even had slightly *more* characters than v1 (4832 vs 4778), proving that character count is a misleading proxy for tokens. The Vercel post's insight about density is correct; the extreme form isn't optimal against today's tokenizers.
+
+### Caveat
+
+The 39% number was measured from LLM-driven compression (careful rule application by a reasoning model, not a regex script). A deterministic compressor (issue [#2](https://github.com/gregoramon/tokenkrush/issues/2)) will aim for 30–35%; some judgment-heavy decisions are hard to encode in pure regex.
+
+See [`examples/before-after-claude-md.md`](examples/before-after-claude-md.md) for the full compression diff on a real-world global CLAUDE.md with all four Karpathy principles preserved verbatim.
 
 ## What it compresses
 
