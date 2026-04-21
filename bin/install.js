@@ -54,20 +54,64 @@ function parseArgs(argv) {
   return result;
 }
 
+function printHelp(out) {
+  out(`tokenkrush installer
+
+Usage:
+  npx @gregoramon/tokenkrush init [options]
+
+Options:
+  --target <path>   Install to a specific path (bypasses ecosystem detection)
+  --all             Install to all detected ecosystems without prompting
+  --link            Symlink instead of copying (for development)
+  --help, -h        Show this help
+
+Detected ecosystems install to:
+  ~/.claude/skills/tokenkrush/               (Claude Code)
+  ~/.openclaw/workspace/skills/tokenkrush/   (OpenClaw)
+  ~/.cursor/skills/tokenkrush/               (Cursor)
+  ~/.gemini/skills/tokenkrush/               (Gemini)
+`);
+}
+
+function runInstall({ args, skillSrc, homeDir, stdout }) {
+  const out = stdout || console.log;
+
+  if (args.help) {
+    printHelp(out);
+    return 0;
+  }
+
+  const targets = [];
+  if (args.target) {
+    targets.push({ name: 'custom', installPath: path.join(args.target, 'skills', 'tokenkrush') });
+  } else {
+    const ecos = detectEcosystems(homeDir);
+    if (ecos.length === 0) {
+      out('No AI tool ecosystems detected. Try --target <path> or install Claude Code / OpenClaw / Cursor first.');
+      return 1;
+    }
+    targets.push(...ecos);
+  }
+
+  for (const target of targets) {
+    copySkillDir(skillSrc, target.installPath);
+    out(`Installed to ${target.installPath} (${target.name})`);
+  }
+
+  out(`\nDone. Try it: "compress my CLAUDE.md"`);
+  return 0;
+}
+
 function main() {
-  const ecos = detectEcosystems();
-  if (ecos.length === 0) {
-    console.log('No AI tool ecosystems detected (~/.claude, ~/.openclaw/workspace, ~/.cursor, ~/.gemini).');
-    process.exit(1);
-  }
-  console.log(`Detected ${ecos.length} ecosystem(s):`);
-  for (const eco of ecos) {
-    console.log(`  - ${eco.name} → ${eco.installPath}`);
-  }
+  const args = parseArgs(process.argv.slice(2));
+  const skillSrc = path.join(__dirname, '..', 'skills', 'tokenkrush');
+  const code = runInstall({ args, skillSrc });
+  process.exit(code);
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { main, detectEcosystems, copySkillDir, parseArgs };
+module.exports = { main, detectEcosystems, copySkillDir, parseArgs, runInstall };

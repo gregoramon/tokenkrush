@@ -111,3 +111,44 @@ test('parseArgs with combined flags', () => {
     target: null, all: true, link: true, help: false
   });
 });
+
+test('integration: install to --target copies skill dir', () => {
+  const fakeSkillSrc = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-skillsrc-'));
+  fs.writeFileSync(path.join(fakeSkillSrc, 'SKILL.md'), 'test skill');
+
+  const fakeTarget = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-target-'));
+
+  const exitCode = installer.runInstall({
+    args: { target: fakeTarget, all: true, link: false, help: false },
+    skillSrc: fakeSkillSrc,
+    stdout: () => {}
+  });
+
+  expect(exitCode).toBe(0);
+  expect(fs.existsSync(path.join(fakeTarget, 'skills', 'tokenkrush', 'SKILL.md'))).toBe(true);
+  expect(fs.readFileSync(path.join(fakeTarget, 'skills', 'tokenkrush', 'SKILL.md'), 'utf8')).toBe('test skill');
+
+  fs.rmSync(fakeSkillSrc, { recursive: true });
+  fs.rmSync(fakeTarget, { recursive: true });
+});
+
+test('integration: install with --all to detected ecosystems', () => {
+  const fakeSkillSrc = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-skillsrc-'));
+  fs.writeFileSync(path.join(fakeSkillSrc, 'SKILL.md'), 'test skill');
+
+  const fakeHome = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-home-'));
+  fs.mkdirSync(path.join(fakeHome, '.claude'));
+
+  const exitCode = installer.runInstall({
+    args: { target: null, all: true, link: false, help: false },
+    skillSrc: fakeSkillSrc,
+    homeDir: fakeHome,
+    stdout: () => {}
+  });
+
+  expect(exitCode).toBe(0);
+  expect(fs.existsSync(path.join(fakeHome, '.claude', 'skills', 'tokenkrush', 'SKILL.md'))).toBe(true);
+
+  fs.rmSync(fakeSkillSrc, { recursive: true });
+  fs.rmSync(fakeHome, { recursive: true });
+});
