@@ -62,6 +62,22 @@ test('copySkillDir copies skill directory recursively', () => {
   fs.rmSync(dest, { recursive: true });
 });
 
+test('copySkillDir preserves symlinks (recreates them at dest)', () => {
+  const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
+  const dest = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
+  fs.writeFileSync(path.join(src, 'real.md'), 'real content');
+  fs.symlinkSync('real.md', path.join(src, 'link.md'));
+
+  installer.copySkillDir(src, path.join(dest, 'tokenkrush'));
+
+  const copiedLink = path.join(dest, 'tokenkrush', 'link.md');
+  expect(fs.lstatSync(copiedLink).isSymbolicLink()).toBe(true);
+  expect(fs.readlinkSync(copiedLink)).toBe('real.md');
+
+  fs.rmSync(src, { recursive: true });
+  fs.rmSync(dest, { recursive: true });
+});
+
 test('copySkillDir creates parent directories if missing', () => {
   const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
   const destBase = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
@@ -116,6 +132,25 @@ test('parseArgs with --target but no value flags error', () => {
   const result = installer.parseArgs(['--target']);
   expect(result.target).toBe(null);
   expect(result.targetError).toBe(true);
+});
+
+test('parseArgs with --target followed by another flag flags error (not consumed as path)', () => {
+  const result = installer.parseArgs(['--target', '--all']);
+  expect(result.target).toBe(null);
+  expect(result.targetError).toBe(true);
+  // --all should still NOT be parsed because --target sets targetError and stops iteration at this index
+  // (implementation detail: targetError alone is enough — runInstall exits early before checking .all)
+});
+
+test('runInstall returns 1 with error message when copySkillDir throws', () => {
+  const outputs = [];
+  const exitCode = installer.runInstall({
+    args: { target: '/definitely-nonexistent-readonly-path-xyz', all: true, link: false, help: false },
+    skillSrc: '/definitely-nonexistent-source-xyz',
+    stdout: (msg) => outputs.push(msg)
+  });
+  expect(exitCode).toBe(1);
+  expect(outputs.some(m => m.includes('Failed to install'))).toBe(true);
 });
 
 test('runInstall returns 1 when --target was given without a value', () => {

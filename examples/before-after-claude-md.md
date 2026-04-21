@@ -68,7 +68,7 @@ pkg: Bun (`bun install/add/run`) | system: Homebrew for CLI tools
 | | Action |
 |---|---|
 | Sub-headings (`**Frontend:**`, `**Backend & Data:**`, etc.) | Collapsed into inline prefixes (`frontend:`, `backend:`) |
-| Bullet lists of facts | Joined with `|` separators |
+| Bullet lists of facts | Joined with `\|` separators |
 | Redundant parentheticals ("primary for web apps", "recently started") | Shortened to essential tag (`(web)`, `(mobile)`) |
 | `ALWAYS use MCP tools` emphasis | **Preserved verbatim** |
 | Code-backticks (`bun install`, `brew install`) | **Preserved verbatim** |

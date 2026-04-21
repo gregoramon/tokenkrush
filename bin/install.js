@@ -33,6 +33,9 @@ function copySkillDir(src, dest) {
       copySkillDir(srcPath, destPath);
     } else if (entry.isFile()) {
       fs.copyFileSync(srcPath, destPath);
+    } else if (entry.isSymbolicLink()) {
+      const linkTarget = fs.readlinkSync(srcPath);
+      fs.symlinkSync(linkTarget, destPath);
     }
   }
 }
@@ -42,10 +45,12 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--target') {
-      if (i + 1 >= argv.length) {
+      const next = argv[i + 1];
+      if (!next || next.startsWith('-')) {
         result.targetError = true;
       } else {
-        result.target = argv[++i];
+        result.target = next;
+        i++;
       }
     } else if (arg === '--all') {
       result.all = true;
@@ -104,8 +109,13 @@ function runInstall({ args, skillSrc, homeDir, stdout }) {
   }
 
   for (const target of targets) {
-    copySkillDir(skillSrc, target.installPath);
-    out(`Installed to ${target.installPath} (${target.name})`);
+    try {
+      copySkillDir(skillSrc, target.installPath);
+      out(`Installed to ${target.installPath} (${target.name})`);
+    } catch (err) {
+      out(`Failed to install to ${target.installPath} (${target.name}): ${err.message}`);
+      return 1;
+    }
   }
 
   out(`\nDone. Try it: "compress my CLAUDE.md"`);
