@@ -1,0 +1,17 @@
+{
+  "name": "tokenkrush",
+  "description": "Marketplace for the tokenkrush skill — compresses agent instruction markdown files (CLAUDE.md, AGENTS.md, SOUL.md, memory files).",
+  "owner": {
+    "name": "Gregor Amon",
+    "url": "https://github.com/gregoramon"
+  },
+  "plugins": [
+    {
+      "name": "tokenkrush",
+      "description": "Compresses agent instruction markdown files. Measured ~39% token reduction across Claude, GPT-5, and Gemini tokenizers, with zero directive loss. Especially useful for Claude Opus 4.7 users — cancels the ~43% tokenizer bloat over Sonnet.",
+      "category": "productivity",
+      "source": "./",
+      "homepage": "https://github.com/gregoramon/tokenkrush"
+    }
+  ]
+}
