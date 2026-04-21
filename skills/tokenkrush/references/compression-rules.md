@@ -95,7 +95,7 @@ See `preservation.md` §1.
 ## Headers
 
 - Keep section headings (`##`).
-- Shorten long titles conservatively: `## AI Models Reference (April 2026)` → `## Models (April 2026)`.
+- Shorten long titles conservatively: `## AI Models Reference (2026)` → `## Models (2026)`.
 - Collapse `###` sub-headings into inline-prefixed lines when the section body is short (≤3 lines):
 
 Before:

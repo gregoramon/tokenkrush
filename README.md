@@ -6,9 +6,9 @@ Spelled with a K because I'm Austrian and we like our Ks.
 
 ## Why
 
-Vercel's April 2026 eval showed that a compressed AGENTS.md (pipe-delimited, telegraphic prose) outperformed more sophisticated skill-retrieval systems — 100% pass rate vs 79%. The insight: agents parse dense markdown fine. Token budget spent on padding is wasted.
+Vercel's [*"AGENTS.md outperforms Skills in our agent evals"*](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) (Jan 27, 2026) showed that a compressed AGENTS.md (pipe-delimited, telegraphic prose, 40 KB → 8 KB) outperformed more sophisticated skill-retrieval systems — 100% pass rate vs 79%. The insight: agents parse dense markdown fine. Token budget spent on padding is wasted.
 
-tokenkrush encodes that insight as a reusable skill. Typical result: **40–60% token reduction, zero directive loss.**
+If you want the full argument for **fighting context bloat** in agent instruction files, read the post. tokenkrush encodes that post's conclusions as a reusable skill. Typical result: **40–60% token reduction, zero directive loss.**
 
 See [`examples/before-after-claude-md.md`](examples/before-after-claude-md.md) for a real 45% reduction on a global CLAUDE.md with all four Karpathy principles preserved verbatim.
 
