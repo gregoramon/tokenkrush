@@ -1,0 +1,36 @@
+{
+  "name": "@gregoramon/tokenkrush",
+  "version": "0.1.0",
+  "description": "Compress CLAUDE.md / AGENTS.md / SOUL.md. Install as a Claude Code / OpenClaw / Cursor skill.",
+  "bin": {
+    "tokenkrush": "./bin/install.js"
+  },
+  "files": [
+    "skills/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "bun test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "agents-md",
+    "claude-md",
+    "opencode",
+    "openclaw",
+    "cursor",
+    "skill"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregoramon/tokenkrush.git"
+  },
+  "homepage": "https://github.com/gregoramon/tokenkrush",
+  "author": "Gregor Amon"
+}
