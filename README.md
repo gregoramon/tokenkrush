@@ -80,7 +80,17 @@ Flags:
 - `--link` — reserved for symlink mode; not yet implemented
 - `--help, -h` — show usage
 
-### 3. Git clone (for customization)
+### 3. OpenClaw via ClawHub
+
+[ClawHub](https://clawhub.ai) is the public skills registry for OpenClaw. Once tokenkrush is published to ClawHub (post-v0.1), install with:
+
+```
+openclaw skills install tokenkrush
+```
+
+In the meantime, the `npx` installer above (#2) detects `~/.openclaw/workspace/` and copies the skill directly — works for OpenClaw users today without waiting for ClawHub publication. Alternatively, for manual install via `skills.load.extraDirs`, clone the repo and point OpenClaw's config at `tokenkrush/skills/`.
+
+### 4. Git clone (for customization)
 
 ```
 git clone https://github.com/gregoramon/tokenkrush.git ~/some/path

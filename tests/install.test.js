@@ -162,13 +162,16 @@ test('parseArgs with --target followed by another flag flags error (not consumed
 
 test('runInstall returns 1 with error message when copySkillDir throws', () => {
   const outputs = [];
+  const fakeTarget = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-target-'));
+  const missingSkillSrc = path.join(os.tmpdir(), 'tk-missing-src-' + Date.now());
   const exitCode = installer.runInstall({
-    args: { target: '/definitely-nonexistent-readonly-path-xyz', all: true, link: false, help: false },
-    skillSrc: '/definitely-nonexistent-source-xyz',
+    args: { target: fakeTarget, all: true, link: false, help: false },
+    skillSrc: missingSkillSrc,
     stdout: (msg) => outputs.push(msg)
   });
   expect(exitCode).toBe(1);
   expect(outputs.some(m => m.includes('Failed to install'))).toBe(true);
+  fs.rmSync(fakeTarget, { recursive: true, force: true });
 });
 
 test('runInstall returns 1 when --target was given without a value', () => {
