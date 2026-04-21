@@ -84,7 +84,7 @@ After discovery, show the user a table grouped by scope and ask what to compress
 ```
 Found 3 files:
 
-GLOBAL (~/.claude/, ~/.opencode/):
+GLOBAL (~/.claude/, ~/.openclaw/):
   [1] ~/.claude/CLAUDE.md          4.8KB  101 lines
 
 LOCAL (./):

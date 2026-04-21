@@ -30,7 +30,7 @@ Show the user a table grouped by scope (GLOBAL / LOCAL) with estimated token sav
 ```
 Found 3 files:
 
-GLOBAL (~/.claude/, ~/.opencode/):
+GLOBAL (~/.claude/, ~/.openclaw/):
   [1] ~/.claude/CLAUDE.md          4.8KB  101 lines
 
 LOCAL (./):
