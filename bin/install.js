@@ -23,6 +23,20 @@ function detectEcosystems(homeDir = os.homedir()) {
   return found;
 }
 
+function copySkillDir(src, dest) {
+  fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copySkillDir(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 function main() {
   const ecos = detectEcosystems();
   if (ecos.length === 0) {
@@ -39,4 +53,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { main, detectEcosystems };
+module.exports = { main, detectEcosystems, copySkillDir };

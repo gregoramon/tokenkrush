@@ -45,3 +45,33 @@ test('detectEcosystems finds multiple ecosystems', () => {
   expect(result.map(r => r.name).sort()).toEqual(['claude-code', 'openclaw']);
   fs.rmSync(fakeHome, { recursive: true });
 });
+
+test('copySkillDir copies skill directory recursively', () => {
+  const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
+  const dest = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
+  fs.mkdirSync(path.join(src, 'references'));
+  fs.writeFileSync(path.join(src, 'SKILL.md'), 'skill body');
+  fs.writeFileSync(path.join(src, 'references', 'a.md'), 'ref a');
+
+  installer.copySkillDir(src, path.join(dest, 'tokenkrush'));
+
+  expect(fs.readFileSync(path.join(dest, 'tokenkrush', 'SKILL.md'), 'utf8')).toBe('skill body');
+  expect(fs.readFileSync(path.join(dest, 'tokenkrush', 'references', 'a.md'), 'utf8')).toBe('ref a');
+
+  fs.rmSync(src, { recursive: true });
+  fs.rmSync(dest, { recursive: true });
+});
+
+test('copySkillDir creates parent directories if missing', () => {
+  const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
+  const destBase = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
+  fs.writeFileSync(path.join(src, 'SKILL.md'), 'hello');
+
+  const deepDest = path.join(destBase, 'deep', 'nested', 'tokenkrush');
+  installer.copySkillDir(src, deepDest);
+
+  expect(fs.readFileSync(path.join(deepDest, 'SKILL.md'), 'utf8')).toBe('hello');
+
+  fs.rmSync(src, { recursive: true });
+  fs.rmSync(destBase, { recursive: true });
+});
