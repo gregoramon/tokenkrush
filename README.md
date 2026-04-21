@@ -108,6 +108,16 @@ tokenkrush is CWD-first:
 
 **Power users** can add `~/.claude/` (and similar tool home dirs) to `additionalDirectories` in Claude Code's `settings.json` to see global files from any CWD.
 
+## Performance note (v0.1)
+
+v0.1 is entirely LLM-driven: Claude reasons about each section of each file and applies compression rules in its reasoning loop. This is slow — especially with extended thinking enabled or flagship models. A 3-file compression can take several minutes.
+
+Tips to speed it up:
+- Use Sonnet (or Haiku) instead of Opus: `/model claude-sonnet-4-6`
+- Disable extended thinking for this task (use `/think` to toggle, or adjust settings)
+
+**v0.2 will replace the LLM per-section work with a deterministic Node.js compressor** (7 min → ~5 sec). See [issue #2](https://github.com/gregoramon/tokenkrush/issues/2).
+
 ## Development
 
 ```
