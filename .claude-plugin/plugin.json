@@ -1,0 +1,13 @@
+{
+  "name": "tokenkrush",
+  "version": "0.1.0",
+  "description": "Compress CLAUDE.md / AGENTS.md / SOUL.md files. 40-60% token reduction, zero directive loss.",
+  "author": {
+    "name": "Gregor Amon",
+    "url": "https://github.com/gregoramon/tokenkrush"
+  },
+  "homepage": "https://github.com/gregoramon/tokenkrush",
+  "license": "MIT",
+  "skills": ["./skills/tokenkrush"],
+  "keywords": ["claude-code", "agents-md", "claude-md", "tokens", "optimization", "openclaw", "cursor"]
+}
