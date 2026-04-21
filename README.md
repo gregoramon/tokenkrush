@@ -36,9 +36,9 @@ While we took inspiration from the Vercel blog's ultra-dense format (single-line
 
 **Why:** dash-joining shatters common-word tokens (e.g., `"Bun workspaces"` is 2 tokens; `"Bun-workspaces"` can be 3-4). Curly-brace hierarchies introduce unfamiliar structural tokens. The v2 version even had slightly *more* characters than v1 (4832 vs 4778), proving that character count is a misleading proxy for tokens. The Vercel post's insight about density is correct; the extreme form isn't optimal against today's tokenizers.
 
-### Caveat
+### A note on why this is LLM-driven, not a script
 
-The 39% number was measured from LLM-driven compression (careful rule application by a reasoning model, not a regex script). A deterministic compressor (issue [#2](https://github.com/gregoramon/tokenkrush/issues/2)) will aim for 30–35%; some judgment-heavy decisions are hard to encode in pure regex.
+We benchmarked a regex-based deterministic compressor against the same fixtures and it capped at **7–9% token savings** — roughly 5× less than the LLM-driven approach. The gap is structural: regex can strip bold markers, collapse table padding, and merge `**Label:**`-style bullet lists, but it can't abbreviate named entities (`React Native` → `RN`), remove verbose qualifiers (`(primary for web apps)` → `(web)`), or distinguish fact lists from prose lists. Compression at 39% is a judgment task. See closed issue [#2](https://github.com/gregoramon/tokenkrush/issues/2) for the full benchmark.
 
 See [`examples/before-after-claude-md.md`](examples/before-after-claude-md.md) for the full compression diff on a real-world global CLAUDE.md with all four Karpathy principles preserved verbatim.
 
@@ -146,7 +146,7 @@ Tips to speed it up:
 - Use Sonnet (or Haiku) instead of Opus: `/model claude-sonnet-4-6`
 - Disable extended thinking for this task (use `/think` to toggle, or adjust settings)
 
-**v0.2 will replace the LLM per-section work with a deterministic Node.js compressor** (7 min → ~5 sec). See [issue #2](https://github.com/gregoramon/tokenkrush/issues/2).
+We explored a deterministic regex-based compressor as a fast alternative and measured it at only 7–9% token savings (vs 39% for LLM-driven). Compression at this level is fundamentally a judgment task, not a regex task. See closed issue [#2](https://github.com/gregoramon/tokenkrush/issues/2) for the full benchmark and reasoning.
 
 ## Development
 
