@@ -35,6 +35,9 @@ function copySkillDir(src, dest) {
       fs.copyFileSync(srcPath, destPath);
     } else if (entry.isSymbolicLink()) {
       const linkTarget = fs.readlinkSync(srcPath);
+      if (fs.existsSync(destPath) || fs.lstatSync(destPath, { throwIfNoEntry: false })) {
+        fs.rmSync(destPath, { force: true });
+      }
       fs.symlinkSync(linkTarget, destPath);
     }
   }

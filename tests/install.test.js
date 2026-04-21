@@ -78,6 +78,23 @@ test('copySkillDir preserves symlinks (recreates them at dest)', () => {
   fs.rmSync(dest, { recursive: true });
 });
 
+test('copySkillDir is idempotent — symlinks overwrite on reinstall', () => {
+  const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
+  const dest = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
+  fs.writeFileSync(path.join(src, 'real.md'), 'content');
+  fs.symlinkSync('real.md', path.join(src, 'link.md'));
+
+  installer.copySkillDir(src, path.join(dest, 'tokenkrush'));
+  // Second install to same destination — must not throw EEXIST on the symlink
+  expect(() => installer.copySkillDir(src, path.join(dest, 'tokenkrush'))).not.toThrow();
+
+  const copiedLink = path.join(dest, 'tokenkrush', 'link.md');
+  expect(fs.lstatSync(copiedLink).isSymbolicLink()).toBe(true);
+
+  fs.rmSync(src, { recursive: true });
+  fs.rmSync(dest, { recursive: true });
+});
+
 test('copySkillDir creates parent directories if missing', () => {
   const src = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-src-'));
   const destBase = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-dest-'));
@@ -138,8 +155,9 @@ test('parseArgs with --target followed by another flag flags error (not consumed
   const result = installer.parseArgs(['--target', '--all']);
   expect(result.target).toBe(null);
   expect(result.targetError).toBe(true);
-  // --all should still NOT be parsed because --target sets targetError and stops iteration at this index
-  // (implementation detail: targetError alone is enough — runInstall exits early before checking .all)
+  // The flag-like next token is NOT consumed as the path; parser keeps iterating and still parses --all.
+  // runInstall checks targetError first and exits 1 before acting on args.all, so order doesn't matter in practice.
+  expect(result.all).toBe(true);
 });
 
 test('runInstall returns 1 with error message when copySkillDir throws', () => {

@@ -66,7 +66,7 @@ Some Claude Code sessions run in permission-restricted mode — the agent can on
 
 Example output when permission-restricted:
 
-```
+```text
 Found 2 files (LOCAL):
   [1] ./CLAUDE.md          2.1KB   84 lines
   [2] ./AGENTS.md          1.4KB   52 lines
@@ -81,7 +81,7 @@ to read it from this directory. To include global files, either:
 
 After discovery, show the user a table grouped by scope and ask what to compress:
 
-```
+```text
 Found 3 files:
 
 GLOBAL (~/.claude/, ~/.openclaw/):

@@ -1,6 +1,6 @@
 ---
 name: tokenkrush
-description: Compresses agent instruction markdown files (CLAUDE.md, AGENTS.md, SOUL.md, GEMINI.md, memory files) using Vercel-style pipe-delimited dense format and telegraphic prose. Reduces token count 40-60% while preserving directive clarity. TRIGGER when user asks to compress, shrink, reduce tokens, optimize, or slim down any agent instruction file. Works globally (~/.claude/CLAUDE.md) or per-project (./CLAUDE.md).
+description: Compresses agent instruction markdown files (CLAUDE.md, AGENTS.md, SOUL.md, GEMINI.md, memory files) using Vercel-style pipe-delimited dense format and telegraphic prose. Reduces token count ~39% (measured across Claude, GPT-5, and Gemini tokenizers) while preserving directive clarity. TRIGGER when user asks to compress, shrink, reduce tokens, optimize, or slim down any agent instruction file. Works globally (~/.claude/CLAUDE.md) or per-project (./CLAUDE.md).
 ---
 
 # tokenkrush
@@ -27,7 +27,7 @@ If the user supplied an explicit path (e.g., "compress /path/to/file.md"), skip 
 
 Show the user a table grouped by scope (GLOBAL / LOCAL) with estimated token savings. Example:
 
-```
+```text
 Found 3 files:
 
 GLOBAL (~/.claude/, ~/.openclaw/):
@@ -42,7 +42,7 @@ Compress: [a]ll, [g]lobal, [l]ocal, or numbers (e.g., "1,3")?
 
 If global files were skipped due to permissions, append:
 
-```
+```text
 Note: I can also see ~/.claude/CLAUDE.md exists but don't have permission
 to read it from this directory. To include global files, either:
   - cd ~ and re-run, or
@@ -77,7 +77,7 @@ For each approved file:
 
 Example final output:
 
-```
+```text
 Compressed 2 files:
   ~/.claude/CLAUDE.md   8784 → 4838 chars  (-45%, ~986 tokens saved)
   ./AGENTS.md           1423 →  812 chars  (-43%, ~152 tokens saved)
