@@ -112,6 +112,23 @@ test('parseArgs with combined flags', () => {
   });
 });
 
+test('parseArgs with --target but no value flags error', () => {
+  const result = installer.parseArgs(['--target']);
+  expect(result.target).toBe(null);
+  expect(result.targetError).toBe(true);
+});
+
+test('runInstall returns 1 when --target was given without a value', () => {
+  const outputs = [];
+  const exitCode = installer.runInstall({
+    args: { target: null, targetError: true, all: false, link: false, help: false },
+    skillSrc: '/nonexistent',
+    stdout: (msg) => outputs.push(msg)
+  });
+  expect(exitCode).toBe(1);
+  expect(outputs.some(m => m.includes('--target requires a path'))).toBe(true);
+});
+
 test('integration: install to --target copies skill dir', () => {
   const fakeSkillSrc = fs.mkdtempSync(path.join(os.tmpdir(), 'tk-skillsrc-'));
   fs.writeFileSync(path.join(fakeSkillSrc, 'SKILL.md'), 'test skill');

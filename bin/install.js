@@ -42,7 +42,11 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--target') {
-      result.target = argv[++i];
+      if (i + 1 >= argv.length) {
+        result.targetError = true;
+      } else {
+        result.target = argv[++i];
+      }
     } else if (arg === '--all') {
       result.all = true;
     } else if (arg === '--link') {
@@ -61,9 +65,9 @@ Usage:
   npx @gregoramon/tokenkrush init [options]
 
 Options:
-  --target <path>   Install to a specific path (bypasses ecosystem detection)
-  --all             Install to all detected ecosystems without prompting
-  --link            Symlink instead of copying (for development)
+  --target <path>   Install under <path>/skills/tokenkrush/ (bypasses ecosystem detection)
+  --all             Install to all detected ecosystems (currently the default; reserved for future interactive mode)
+  --link            Symlink instead of copying (reserved; not yet implemented)
   --help, -h        Show this help
 
 Detected ecosystems install to:
@@ -80,6 +84,11 @@ function runInstall({ args, skillSrc, homeDir, stdout }) {
   if (args.help) {
     printHelp(out);
     return 0;
+  }
+
+  if (args.targetError) {
+    out('Error: --target requires a path argument (e.g., --target ~/.claude).');
+    return 1;
   }
 
   const targets = [];
