@@ -37,6 +37,23 @@ function copySkillDir(src, dest) {
   }
 }
 
+function parseArgs(argv) {
+  const result = { target: null, all: false, link: false, help: false };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--target') {
+      result.target = argv[++i];
+    } else if (arg === '--all') {
+      result.all = true;
+    } else if (arg === '--link') {
+      result.link = true;
+    } else if (arg === '--help' || arg === '-h') {
+      result.help = true;
+    }
+  }
+  return result;
+}
+
 function main() {
   const ecos = detectEcosystems();
   if (ecos.length === 0) {
@@ -53,4 +70,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { main, detectEcosystems, copySkillDir };
+module.exports = { main, detectEcosystems, copySkillDir, parseArgs };

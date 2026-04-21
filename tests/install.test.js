@@ -75,3 +75,39 @@ test('copySkillDir creates parent directories if missing', () => {
   fs.rmSync(src, { recursive: true });
   fs.rmSync(destBase, { recursive: true });
 });
+
+test('parseArgs with no flags returns defaults', () => {
+  expect(installer.parseArgs([])).toEqual({
+    target: null, all: false, link: false, help: false
+  });
+});
+
+test('parseArgs with --target <path>', () => {
+  expect(installer.parseArgs(['--target', '/custom/path'])).toEqual({
+    target: '/custom/path', all: false, link: false, help: false
+  });
+});
+
+test('parseArgs with --all', () => {
+  expect(installer.parseArgs(['--all'])).toEqual({
+    target: null, all: true, link: false, help: false
+  });
+});
+
+test('parseArgs with --link', () => {
+  expect(installer.parseArgs(['--link'])).toEqual({
+    target: null, all: false, link: true, help: false
+  });
+});
+
+test('parseArgs with --help', () => {
+  expect(installer.parseArgs(['--help'])).toEqual({
+    target: null, all: false, link: false, help: true
+  });
+});
+
+test('parseArgs with combined flags', () => {
+  expect(installer.parseArgs(['--all', '--link'])).toEqual({
+    target: null, all: true, link: true, help: false
+  });
+});
